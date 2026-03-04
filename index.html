@@ -229,7 +229,7 @@ function fileToBase64(file) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // CLAUDE API — PDF EXTRACTION
 // ═══════════════════════════════════════════════════════════════════════════════
-async function extractWithClaude(base64PDF, subjectInfo) {
+async function extractWithClaude(base64PDF, subjectInfo, apiKey) {
   const moduleList = subjectInfo.modules.map(m =>
     `- Module ID "${m.id}" | ${m.num} "${m.title}"\n  Sections: ${m.subs.map(s => `ID "${s.id}" ${s.num} "${s.title}"`).join(" | ")}`
   ).join("\n");
@@ -276,7 +276,12 @@ Rules:
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-allow-browser": "true",
+    },
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 8000,
@@ -310,6 +315,8 @@ function ImportPanel({ t, contentStore, onImport, onClose }) {
   const [log, setLog] = useState([]);
   const [progress, setProgress] = useState(0);
   const [dragOver, setDragOver] = useState(false);
+  const [apiKey, setApiKey] = useState(() => Store.get("apikey") || "");
+  const [showKey, setShowKey] = useState(false);
   const fileRef = useRef(null);
   const logRef = useRef(null);
 
@@ -329,6 +336,8 @@ function ImportPanel({ t, contentStore, onImport, onClose }) {
 
   const runImport = async () => {
     if (!file) return;
+    if (!apiKey.trim()) { addLog("❌ Please enter your Anthropic API key first.", "error"); return; }
+    Store.set("apikey", apiKey.trim());
     setStatus("extracting"); setLog([]); setProgress(10);
     try {
       addLog(`📄 Reading "${file.name}" (${(file.size/1024/1024).toFixed(1)} MB)…`);
@@ -337,7 +346,7 @@ function ImportPanel({ t, contentStore, onImport, onClose }) {
       addLog("🤖 Sending to Claude API — extracting all curriculum content…");
       addLog("⏳ This typically takes 30–90 seconds for a full subject PDF.");
       setStatus("parsing");
-      const result = await extractWithClaude(b64, subj);
+      const result = await extractWithClaude(b64, subj, apiKey.trim());
       setProgress(90);
       const modCount = Object.keys(result.modules || {}).length;
       addLog(`✅ Success! ${modCount} modules extracted and mapped.`, "success");
@@ -369,6 +378,29 @@ function ImportPanel({ t, contentStore, onImport, onClose }) {
         </div>
 
         <div style={{padding:"22px 28px"}}>
+          {/* API Key */}
+          <div style={{marginBottom:22,background:t.impBg,border:`1.5px solid ${t.imp}`,borderRadius:9,padding:"14px 16px"}}>
+            <div style={{fontSize:11.5,fontWeight:700,color:t.imp,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:6}}>🔑 Anthropic API Key</div>
+            <p style={{fontSize:12,color:t.muted,marginBottom:10,lineHeight:1.55}}>
+              Required to call Claude for PDF extraction. Get yours free at{" "}
+              <a href="https://console.anthropic.com" target="_blank" style={{color:t.imp}}>console.anthropic.com</a>.
+              Your key is saved locally and never sent anywhere except Anthropic's API.
+            </p>
+            <div style={{display:"flex",gap:8,alignItems:"center"}}>
+              <input
+                type={showKey?"text":"password"}
+                value={apiKey}
+                onChange={e=>setApiKey(e.target.value)}
+                placeholder="sk-ant-api03-..."
+                style={{flex:1,padding:"8px 11px",borderRadius:6,border:`1px solid ${t.bdr}`,background:t.bg,color:t.txt,fontSize:13,outline:"none",fontFamily:"monospace"}}
+              />
+              <button onClick={()=>setShowKey(s=>!s)} style={{background:"none",border:`1px solid ${t.bdr}`,borderRadius:6,padding:"8px 11px",cursor:"pointer",color:t.muted,fontSize:12,whiteSpace:"nowrap"}}>
+                {showKey?"Hide":"Show"}
+              </button>
+            </div>
+            {apiKey && <div style={{marginTop:6,fontSize:11,color:t.done}}>✓ Key entered — saved to browser storage</div>}
+          </div>
+
           {/* Step 1 */}
           <div style={{marginBottom:20}}>
             <div style={{fontSize:11.5,fontWeight:700,color:t.txt,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
@@ -419,11 +451,11 @@ function ImportPanel({ t, contentStore, onImport, onClose }) {
               <span style={{background:t.acc,color:"#fff",borderRadius:"50%",width:20,height:20,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,flexShrink:0}}>3</span>
               Extract & Import
             </div>
-            <button onClick={runImport} disabled={!file||status==="extracting"||status==="parsing"}
-              style={{width:"100%",padding:"12px",borderRadius:8,border:"none",fontSize:14,fontWeight:700,cursor:(!file||status==="extracting"||status==="parsing")?"not-allowed":"pointer",transition:"all 0.2s",
-                background:(!file||status==="extracting"||status==="parsing")?t.bdr:status==="done"?t.done:t.imp,
-                color:(!file||status==="extracting"||status==="parsing")?t.muted:"#fff"}}>
-              {status==="extracting"?"📄 Reading PDF…":status==="parsing"?"🤖 Claude extracting content…":status==="done"?"✅ Import Complete — Import Another?":"🚀 Start Extraction"}
+            <button onClick={runImport} disabled={!file||!apiKey.trim()||status==="extracting"||status==="parsing"}
+              style={{width:"100%",padding:"12px",borderRadius:8,border:"none",fontSize:14,fontWeight:700,cursor:(!file||!apiKey.trim()||status==="extracting"||status==="parsing")?"not-allowed":"pointer",transition:"all 0.2s",
+                background:(!file||!apiKey.trim()||status==="extracting"||status==="parsing")?t.bdr:status==="done"?t.done:t.imp,
+                color:(!file||!apiKey.trim()||status==="extracting"||status==="parsing")?t.muted:"#fff"}}>
+              {!apiKey.trim()?"🔑 Enter API Key Above First":status==="extracting"?"📄 Reading PDF…":status==="parsing"?"🤖 Claude extracting content…":status==="done"?"✅ Import Complete — Import Another?":"🚀 Start Extraction"}
             </button>
             {(status==="extracting"||status==="parsing"||status==="done")&&(
               <div style={{marginTop:10,height:5,background:t.bdr,borderRadius:3,overflow:"hidden"}}>
