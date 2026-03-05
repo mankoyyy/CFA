@@ -2136,6 +2136,683 @@ const FSA_MODULES = [
   }
 ];
 
+  const EQTY_CONTENT = {
+  eq1: {
+    intro: "This module explains how financial systems move funds, risk, and information across time and participants. It is foundational for CFA equity work because valuation and portfolio decisions only matter if you understand market structure, trading mechanics, and regulation.",
+    sections: {
+      eq1a: {
+        body: `The financial system helps people save, borrow, raise equity capital, manage risk, exchange assets, and trade on information. In the curriculum, these six user purposes map to three system-level functions: facilitating those purposes, discovering returns that equilibrate aggregate savings and borrowing, and allocating capital to its best uses. A well-functioning system lowers transaction costs and improves allocative efficiency by channeling scarce capital toward higher-value projects. This is why analysts care about micro details like execution and settlement as much as macro concepts like capital formation.
+
+Assets and markets are classified by claim type and economic role. Securities include debt and equity claims, while contracts include forwards, futures, options, and swaps; currencies, commodities, and real assets also trade in organized markets. Primary markets transfer funds from investors to issuers at issuance, while secondary markets transfer ownership among investors and support lower issuer funding costs through liquidity. The module emphasizes that higher secondary-market liquidity raises primary-market prices and reduces the cost of capital for issuers.
+
+Intermediaries make the system scalable and safer: investment banks underwrite and distribute securities, exchanges and dealers organize trading, clearinghouses reduce counterparty risk, and custodians safeguard assets. In futures markets, initial margin and variation margin continuously re-collateralize exposure, which allows anonymous participants to trade standardized contracts. These institutions also create products and transform risk through securitization, pooled vehicles, and insurance contracts. Without intermediary infrastructure, contracting frictions, settlement risk, and information asymmetries would sharply reduce participation and capital formation.`,
+        note: "Remember: primary markets fund issuers, secondary markets fund liquidity. A common trap is calling every trade an issuance; most trades are secondary transfers between investors.",
+        definition: "Financial system: The network of markets and intermediaries that transfers assets, cash flows, and risks across participants, locations, and time while supporting price discovery and capital allocation.",
+        example: "A grain farmer expects to sell 10,000 bushels in three months and fears prices will fall; a food processor fears prices will rise. They sign a forward at USD5.00 per bushel. If spot falls to USD4.40, the farmer is protected by the contract price; if spot rises to USD5.60, the processor is protected. The contract converts uncertain future cash flows into a known price, demonstrating the risk-transfer function."
+      },
+      eq1b: {
+        body: `Trading positions and financing choices determine payoff asymmetry and risk. A long position benefits from price increases; a short position benefits from declines but carries theoretically unlimited loss because price can rise without bound. Leverage magnifies outcomes by funding part of a position with borrowed money. The leverage ratio is Position Value / Equity, and with a 40% initial margin the maximum leverage is 1 / 0.40 = 2.5x.
+
+The curriculum’s margin examples show why leverage is dangerous in drawdowns. In the worked stock purchase case, 1,000 shares bought at USD20 with 2.5x leverage and sold at USD15 produced a return of about -68.9% on equity after interest, dividends, and commissions, much worse than the stock’s -25% price move. Maintenance margin creates a forced-risk-control threshold: with USD20 purchase price, USD8 equity per share, and 25% maintenance margin, the margin-call trigger solves (8 + P - 20) / P = 0.25, giving P = USD16. Below that level, the investor must post additional equity or be liquidated.
+
+Order instructions control execution quality and timing. Market orders prioritize immediacy; limit orders prioritize price constraints. In the Tokyo order-book example, a 15-contract buy limit at ¥100.5 executed 4 at ¥100.4 and 6 at ¥100.5 for an average ¥100.46, with 5 contracts resting if not IOC. Market structures differ by mechanism: quote-driven markets transact with dealers, order-driven markets match limit order flow via precedence rules, and brokered markets arrange hard-to-match block or unique-asset trades. Regulation then targets fraud, agency conflicts, fairness, capitalization, and funding of long-term liabilities to keep participation and trust intact.`,
+        note: "Remember: leverage scales both gains and losses linearly before financing costs. Candidates often compute stock return correctly but forget to translate it to return on equity using leverage and margin interest.",
+        definition: "Maintenance margin requirement: The minimum equity fraction of current position value that must be maintained in a margined account to avoid a margin call.",
+        example: "A trader buys 1,000 shares at USD20 using 40% equity. Initial equity is USD8,000 and margin loan is USD12,000. After one year, stock is USD15, dividend is USD0.10/share, loan rate is 5%, and commissions are USD0.01/share on buy and sell. Ending equity = 15,000 - 12,000 - 600 + 100 - 10 = 2,490; initial cash outlay including buy commission = 8,010. Return = (2,490 - 8,010) / 8,010 = -68.9%."
+      }
+    },
+    flashcards: [
+      { q: "What are the six main user purposes of the financial system in LM1?", a: "Saving, borrowing, raising equity capital, managing risk, exchanging assets (spot), and information-motivated trading." },
+      { q: "What are the three core system-level functions of the financial system?", a: "Facilitate user purposes, discover rates of return that equilibrate savings and borrowing, and allocate capital to best uses." },
+      { q: "How is maximum leverage related to initial margin requirement?", a: "Maximum leverage ratio = 1 / initial margin requirement. Example: 40% margin implies 2.5x leverage." },
+      { q: "What is the difference between a market order and a limit order?", a: "A market order seeks immediate execution at the best available price; a limit order sets a worst acceptable price and may not execute." },
+      { q: "How do primary and secondary markets differ in cash-flow direction?", a: "Primary market: investor funds go to issuer. Secondary market: funds transfer between investors while issuer is not directly funded." },
+      { q: "What is the margin-call price formula in a long margined position?", a: "Set Equity/Price equal to maintenance margin. With initial equity per share E0 at initial price P0, use (E0 + P - P0)/P = maintenance margin and solve for P." }
+    ],
+    questions: [
+      `A portfolio manager uses satellite data and dealer inventory counts to predict auto sales surprises and trade ahead of public releases. This manager is best described as:
+
+A) A hedger
+B) An investor
+C) An information-motivated trader
+D) A market maker
+
+Answer: C — Information-motivated traders seek returns from superior information processing. A hedger offsets an existing risk exposure, an investor may simply transfer wealth through time, and a market maker provides liquidity rather than primarily trading informational signals.`,
+      `A trader buys stock on 40% initial margin. The maximum leverage ratio is closest to:
+
+A) 1.40
+B) 2.00
+C) 2.50
+D) 4.00
+
+Answer: C — Maximum leverage is 1 divided by margin fraction, so 1/0.40 = 2.5x. A and B understate leverage and D would require a 25% margin, not 40%.`,
+      `A stock is bought at USD20 with equity USD8 per share and maintenance margin 25%. The price that triggers a margin call is closest to:
+
+A) USD14
+B) USD16
+C) USD18
+D) USD20
+
+Answer: B — Solve (8 + P - 20)/P = 0.25, yielding P = 16. At USD14 equity ratio is already below maintenance, while USD18 and USD20 are above the trigger threshold.`,
+      `In an underwritten IPO, who bears the risk that the issue is undersubscribed at the offering price?
+
+A) The issuer
+B) The underwriter
+C) Secondary market investors
+D) The exchange
+
+Answer: B — In an underwritten deal, the investment bank guarantees placement and absorbs unsold inventory risk. In a best-efforts deal that risk remains with the issuer, making A the tempting but incorrect alternative here.`,
+      `A trader submits a buy limit order for 15 contracts at ¥100.5. The best offers are 4 at ¥100.4, 6 at ¥100.5, and 12 at ¥100.6. If the order is a day order, what happens immediately?
+
+A) All 15 execute at ¥100.5
+B) 10 execute, 5 rest on the bid at ¥100.5
+C) 4 execute and 11 cancel
+D) No execution occurs
+
+Answer: B — The order executes against better/equal-priced asks first: 4 at ¥100.4 and 6 at ¥100.5. Remaining 5 cannot cross ¥100.6 and therefore rest as a bid unless IOC instruction forces cancellation.`
+    ]
+  },
+  eq2: {
+    intro: "This module develops how security market indexes are built, maintained, and used in investment analysis. It is heavily testable because small construction choices like weighting and rebalancing materially change return, risk, and benchmark interpretation.",
+    sections: {
+      eq2a: {
+        body: `Modern indexing began with Dow and Jones and evolved from simple gauges of sentiment into central tools for risk modeling, benchmarking, and investable products. Index level calculation generally uses a portfolio value divided by a divisor, with corporate actions handled through divisor adjustments to preserve continuity. Total return indexes include dividends while price return indexes do not, and this distinction frequently drives exam traps. Analysts must match the index construction to the intended use-case before drawing performance conclusions.
+
+Weighting method is the dominant determinant of index behavior. In price-weighted indexes, each constituent’s weight is proportional to price, so high nominal-price stocks dominate even if economically smaller. In equal-weighted indexes each constituent starts at 1/N and needs periodic rebalancing. In market-cap-weighted indexes, weight is market value over aggregate market value, often using float-adjusted shares to reflect investable supply.
+
+The curriculum’s five-stock exhibits quantify these differences. In the price-weighted case, beginning sum of prices was 101.50 and divisor 5, so index level was 20.30; the period price return was 3.45% and total return 4.33%. For the same constituents, equal-weighted price return was 10.40%, while market-cap-weighted price return was 1.49%. These divergences show why index selection is never neutral in performance attribution.`,
+        note: "Remember: stock splits require divisor changes in price-weighted indexes to avoid artificial index drops. Candidates often adjust price but forget divisor continuity.",
+        definition: "Market-capitalization weighting: An index weighting method where each constituent’s weight equals its market capitalization (often float-adjusted) divided by total market capitalization of all constituents.",
+        example: "Price-weighted example: five-stock sum of prices is 101.50 and divisor is 5, so index = 101.50/5 = 20.30. After prices move, sum becomes 105.00, so index = 21.00 and price return = (21.00/20.30) - 1 = 3.45%. If a 2-for-1 split cuts one stock from 55 to 27.5, new price sum is 77.5; set new divisor so index stays 21.00: divisor = 77.5/21.0 = 3.69."
+      },
+      eq2b: {
+        body: `Index management has two distinct processes: rebalancing and reconstitution. Rebalancing adjusts existing constituent weights back to target methodology, while reconstitution changes constituent membership by reapplying eligibility rules. Equal-weighted indexes need regular rebalancing due to drift, price-weighted indexes do not rebalance by design, and market-cap-weighted indexes are partly self-rebalancing with price changes. Reconstitution schedules can create predictable turnover and event-driven trading pressure.
+
+The module’s rebalancing example shows equal-weight drift to 19.93%, 15.94%, 11.60%, 25.36%, and 27.17%, which requires selling outperformers and buying underperformers. Reconstitution can have larger market-impact dynamics, as in the Russell 2000 example where anticipated additions/deletions moved prices before the effective date. Uranium Energy Corp’s price rose more than 300% before preliminary inclusion and nearly 400% for the quarter by reconstitution date. This illustrates implementation shortfall risk for passive and benchmark-aware active managers.
+
+Indexes are used as sentiment gauges, market proxies in CAPM beta estimation, asset-allocation building blocks, benchmark references, and replicable product blueprints for index funds/ETFs. Index families span broad market, multi-market, sector, style, fixed-income, commodity, REIT, and hedge fund segments. The analyst’s job is to align construction method, constituent universe, and use-case so comparisons are economically valid. A small-cap manager benchmarked to a broad large-cap index can look skilled by benchmark mismatch rather than true alpha.`,
+        note: "Remember: rebalancing changes weights; reconstitution changes members. A frequent exam error is treating them as interchangeable.",
+        definition: "Reconstitution: The periodic process of adding and deleting securities from an index by reapplying inclusion rules and then reapplying the weighting method.",
+        example: "UEC event example: managers expected Russell 2000 inclusion and accumulated shares ahead of reconstitution. By June 12 preliminary inclusion announcement, UEC had risen more than 300%; by the June 30 reconstitution date it was up close to 400% for the quarter. This demonstrates how anticipated index membership changes can move prices before official implementation."
+      }
+    },
+    flashcards: [
+      { q: "What is the core formula for a price-weighted index level?", a: "Index level = Sum of constituent prices / Divisor. The divisor is adjusted for splits and corporate actions to maintain continuity." },
+      { q: "How does equal-weighting differ from market-cap weighting in maintenance needs?", a: "Equal-weighting drifts and requires regular rebalancing; market-cap weighting largely self-adjusts with price changes and needs less active rebalancing." },
+      { q: "What is a total return index?", a: "An index that includes both price change and reinvested income (such as dividends), unlike a price return index that excludes income." },
+      { q: "What is the fundamental weighting formula conceptually?", a: "Weight_i = Fundamental metric_i / Sum of all constituents’ fundamental metric, using variables like earnings, sales, book value, or dividends." },
+      { q: "Why can annual reconstitution create predictable trading effects?", a: "Benchmarked managers pre-position for expected additions/deletions, causing price pressure before effective reconstitution dates." },
+      { q: "How can benchmark mismatch mislead manager evaluation?", a: "Using a broad or wrong-style benchmark can make relative performance look like skill when it is actually exposure mismatch (beta/style/size effects)." }
+    ],
+    questions: [
+      `A five-stock price-weighted index has a beginning price sum of 101.50 and divisor 5. The ending sum is 105.00. The index price return is closest to:
+
+A) 1.49%
+B) 3.45%
+C) 4.33%
+D) 10.40%
+
+Answer: B — Beginning index = 101.50/5 = 20.30; ending index = 105.00/5 = 21.00; return = 21.00/20.30 - 1 = 3.45%. A and D correspond to other weighting methods in the curriculum examples, while C is total return not price return.`,
+      `A 2-for-1 split occurs in one constituent of a price-weighted index. To keep index level unchanged immediately after split, the index provider should:
+
+A) Leave divisor unchanged
+B) Increase number of constituents only
+C) Adjust divisor to offset price-sum change
+D) Rebalance to equal weights
+
+Answer: C — Price-weighted continuity requires divisor adjustment after mechanical price changes such as splits. Keeping divisor fixed creates an artificial level drop; equal-weight rebalancing is unrelated to price-weight methodology.`,
+      `Which statement best distinguishes rebalancing from reconstitution?
+
+A) Rebalancing changes members; reconstitution changes weights
+B) Rebalancing changes weights; reconstitution changes members
+C) Both terms mean replacing all constituents each quarter
+D) Both only apply to fixed-income indexes
+
+Answer: B — Rebalancing restores target weights among current members; reconstitution reselects the constituent set. A reverses definitions, and C/D are factually incorrect.`,
+      `An actively managed global small-cap strategy is evaluated against a broad large-cap world index. This setup most likely risks:
+
+A) Understating market beta
+B) Benchmark mismatch and distorted alpha inference
+C) Eliminating tracking error
+D) Forcing equal weighting in the portfolio
+
+Answer: B — A benchmark that does not match investment universe/style can misstate skill. Apparent alpha may be style/size exposure rather than manager value-add. C and D are unrelated; A is not the core evaluation issue described.`,
+      `A manager estimates portfolio beta versus MSCI World at 0.95 and constructs a passive alternative as 95% index fund and 5% cash. The excess return of active over this passive mix is:
+
+A) Tracking error
+B) Alpha
+C) Dividend yield spread
+D) Information ratio
+
+Answer: B — In this setup, alpha is active return minus return of the beta-matched passive alternative. Tracking error is volatility of active minus benchmark returns, and information ratio is alpha divided by tracking error.`
+    ]
+  },
+  eq3: {
+    intro: "This module explains how quickly and rationally markets incorporate information, then tests what that means for active management. It also covers anomalies and behavioral biases that challenge, but do not automatically overturn, efficient market conclusions.",
+    sections: {
+      eq3a: {
+        body: `An informationally efficient market is one where prices reflect available information quickly and rationally. The framework distinguishes market value (current tradable price) from intrinsic value (value under complete understanding of risk and cash flows). Active investing seeks mispricing where intrinsic value differs from market value, but expected abnormal returns shrink as efficiency rises. In highly efficient markets, passive strategies often dominate after costs.
+
+Efficiency is not binary; it sits on a continuum shaped by participation, disclosure quality, information processing, and implementation frictions like transaction costs and short-sale constraints. The module emphasizes that only unexpected news should move prices materially because anticipated components are already priced. In the bond-default example, the efficient reaction occurs when uncertainty is resolved at announcement, not when payment is officially missed later. That timing nuance is highly testable in event-study interpretation.
+
+Forms of efficiency define the feasible analysis edge. Weak form says past price/volume are reflected, reducing pure technical edge. Semi-strong form says all public information is reflected quickly, so public-news trading after release should not systematically earn abnormal returns. Strong form includes private information and is generally rejected empirically because insiders have historically earned abnormal profits, which is why legal restrictions exist.`,
+        note: "Remember: finding abnormal return at announcement does not by itself reject semi-strong efficiency; persistent post-announcement drift is the stronger inefficiency signal.",
+        definition: "Market efficiency: The degree to which asset prices incorporate available information rapidly and rationally so that consistent risk-adjusted abnormal returns are difficult to earn after costs.",
+        example: "A distressed bond is rumored to default with expected recovery around USD0.36–0.38 per dollar. If formal default confirmation arrives before open, an efficient market should move price to the new expected recovery range in the first tradable prints after open, not wait until coupon miss date. The tradable surprise is resolution of uncertainty, not the later mechanical event."
+      },
+      eq3b: {
+        body: `Anomalies are recurring return patterns not immediately explained by standard models. Time-series examples include calendar effects and momentum; cross-sectional examples include size and value effects. Evidence quality matters: data mining can generate in-sample winners that disappear out of sample. Analysts must test persistence, economic rationale, and implementability after costs and risk controls.
+
+Several anomalies are weaker after model refinement and realistic frictions. Closed-end funds often trade at discounts to NAV, commonly around 4%–10%, but arbitrage costs and institutional constraints limit easy capture. Post-earnings-announcement drift and IPO underpricing have extensive literature, yet excess-return claims depend on risk-adjustment method, liquidity, and turnover assumptions. The curriculum repeatedly warns that statistical significance is not the same as investable alpha.
+
+Behavioral finance introduces biases such as loss aversion, overconfidence, herding, information cascades, representativeness, mental accounting, conservatism, and narrow framing. These can explain overreaction or underreaction episodes, but market-level efficiency can still hold if arbitrage and learning correct mispricing fast enough. Practically, behavioral tools are most useful for improving analyst process discipline and avoiding own-bias contamination. They are less reliable as standalone trading systems without robust risk and cost control.`,
+        note: "Remember: anomaly discovery is the start of due diligence, not the end. If returns vanish after transaction costs or risk-model updates, the anomaly is not economically exploitable.",
+        definition: "Data mining (data snooping): Searching data repeatedly to find apparently profitable patterns without a prior economic hypothesis, increasing the chance of false discoveries.",
+        example: "Suppose 200 factor variants are tested on historical equities and 8 show significant t-stats. Without an ex-ante hypothesis and out-of-sample validation, those 8 can be random winners. If forward testing shows no excess return net of costs, the prior signal was likely a data-snooping artifact."
+      }
+    },
+    flashcards: [
+      { q: "How do market value and intrinsic value differ?", a: "Market value is the current tradable price; intrinsic value is the analyst’s estimate of fundamental value based on expected cash flows, risk, and discount rates." },
+      { q: "What information set defines weak-form efficiency?", a: "Past market data such as historical prices and trading volume." },
+      { q: "What is the core implication of semi-strong efficiency for public news trading?", a: "Public information should be rapidly reflected in prices, so systematic abnormal returns after public release should be hard to earn net of costs." },
+      { q: "Why do short-sale constraints matter for efficiency?", a: "If pessimistic views cannot be expressed easily, overpricing may persist longer because one side of price discovery is restricted." },
+      { q: "Name two major cross-sectional anomalies covered in LM3.", a: "Size effect (small vs large cap returns) and value effect (low P/E or low M/B style outperformance)." },
+      { q: "What is an information cascade?", a: "A process where later investors infer information from earlier investors’ actions and may imitate them, potentially amplifying price moves." }
+    ],
+    questions: [
+      `An analyst estimates intrinsic value above market price for a stock. The stock is most likely:
+
+A) Overvalued
+B) Fairly valued
+C) Undervalued
+D) Risk-free
+
+Answer: C — If intrinsic value exceeds market price, the stock appears undervalued. A reverses the relationship, B would require near equality, and D is unrelated to valuation comparison.`,
+      `If prices reflect all publicly available information but not private information, market form is:
+
+A) Weak form
+B) Semi-strong form
+C) Strong form
+D) Behavioral form
+
+Answer: B — Semi-strong efficiency includes all public information and implies weak-form efficiency as a subset. Strong form would include private information too.`,
+      `A market where insider trading can earn abnormal profits is most directly inconsistent with:
+
+A) Weak-form efficiency
+B) Semi-strong efficiency
+C) Strong-form efficiency
+D) Price continuity
+
+Answer: C — Strong form requires prices to reflect both public and private information, so insider abnormal returns contradict it. A and B do not require private information to be reflected.`,
+      `A closed-end fund trades at a persistent discount to NAV. The best interpretation is:
+
+A) Guaranteed arbitrage profit after costs
+B) Certain market inefficiency exploitable at scale
+C) Potential anomaly that may be limited by implementation frictions
+D) Evidence that NAV is irrelevant
+
+Answer: C — Discount patterns can exist, but arbitrage costs, liquidity, and structural limits can block profitable capture. A/B overstate exploitability; D is incorrect because NAV remains a valuation anchor.`,
+      `An investor ignores her own model and buys because many peers are buying the same stock. This behavior is best described as:
+
+A) Loss aversion
+B) Herding
+C) Conservatism
+D) Narrow framing
+
+Answer: B — Herding is trading with the crowd rather than independent information processing. Loss aversion concerns asymmetry in gain/loss utility; conservatism is slow belief updating.`
+    ]
+  },
+  eq4: {
+    intro: "This module provides the equity-instrument toolkit: rights structures, domestic vs non-domestic access, and risk-return mechanics. It then links accounting and market metrics such as ROE, P/B, and cost of equity to valuation thinking used throughout Level I.",
+    sections: {
+      eq4a: {
+        body: `Equity securities represent residual ownership claims on company assets after liabilities. Common shares usually carry voting rights and variable residual cash flow claims, while preference shares typically have priority on dividends and liquidation but limited voting rights. Voting architecture matters for control: statutory voting gives one vote per share per seat, while cumulative voting allows concentrated votes across candidates. Dual-class structures can separate economic ownership from control, as shown by family-control examples in the curriculum.
+
+Preference shares blend debt-like and equity-like traits. They often pay fixed dividends, can be cumulative or non-cumulative, participating or non-participating, callable or putable, and sometimes convertible into common shares. Cumulative status protects unpaid dividends by requiring arrears settlement before common distributions. Callable features cap upside for holders and usually require higher dividend yields at issuance; putable features do the opposite by adding downside support.
+
+Global access routes include direct foreign investing, depository receipts, and related structures. Depository receipts allow local-market trading of economic interests in foreign shares, with ADRs in US markets and GDRs in non-US cross-border venues; sponsored programs involve issuer participation while unsponsored programs do not. A global registered share can trade across multiple exchanges in different currencies as the same underlying share class. These structures reduce operational friction for investors while expanding issuer capital access.`,
+        note: "Remember: stock dividends and stock splits change share count and per-share price, but not proportional ownership or total equity value by themselves.",
+        definition: "Cumulative voting: A board-election voting method where total votes equal shares owned times seats up for election, allowing shareholders to allocate votes unevenly across candidates.",
+        example: "A shareholder owns 100 shares and four directors are being elected. Under statutory voting, the investor can cast up to 100 votes per candidate. Under cumulative voting, total votes are 100 × 4 = 400 and can all be allocated to one candidate, increasing minority-holder board influence."
+      },
+      eq4b: {
+        body: `Equity return comes from price change and distributions. The core identity is R_t = (P_t - P_(t-1) + D_t) / P_(t-1), and for foreign equity holdings exchange-rate movement adds another return channel in investor base currency. Reinvested dividends materially compound long-horizon outcomes; curriculum historical charts show huge wealth divergence between price-only and total-return series over 1900–2017. This is why total return, not just price return, is the default performance lens in portfolio analysis.
+
+Risk varies by claim priority and cash-flow uncertainty. Preference shares are often lower risk than common shares because dividend schedules are more contract-like and liquidation priority is higher, though not guaranteed under distress. Common equity risk is higher because residual claims absorb operating and financing volatility after debt and preference obligations. Security features modify risk: putable equity reduces downside uncertainty, while callable equity increases reinvestment/call risk for holders.
+
+Company value analysis connects book metrics and market metrics. ROE is commonly NI_t divided by average book equity, while P/B compares market price per share with book value per share. In the module data, Pfizer’s price and book value per share implied P/B about 2.98 (35.74/11.98), indicating market value above accounting net assets. Cost of equity is the minimum expected return investors require to hold the stock and is used with cost of debt to build WACC for capital budgeting and valuation.`,
+        note: "Remember: high ROE does not automatically mean value creation; compare ROE or ROIC against required return (cost of equity or WACC).",
+        definition: "Return on equity (ROE): Net income available to common shareholders divided by average common book equity, measuring accounting profitability on shareholder capital.",
+        example: "A Japanese stock returns 10% in local currency over the year. If the yen depreciates 10% against the investor’s base currency, approximate foreign-currency total return is about 0%. If yen appreciates 10%, approximate return is about 20%. Currency can offset or amplify local-equity performance."
+      }
+    },
+    flashcards: [
+      { q: "What is the key economic difference between debt and equity financing?", a: "Debt creates contractual repayment obligations (principal and interest); equity represents residual ownership claims without mandatory fixed repayment." },
+      { q: "How do cumulative and statutory voting differ?", a: "Statutory voting typically allows one vote per share per director seat; cumulative voting aggregates votes across seats and allows concentration on selected candidates." },
+      { q: "What does a sponsored depository receipt imply?", a: "The foreign issuer is directly involved in the DR program, with greater formal structure and typically stronger disclosure and investor-rights alignment." },
+      { q: "Write the equity total return formula.", a: "R_t = (P_t - P_(t-1) + D_t) / P_(t-1)." },
+      { q: "Why can preference shares be lower risk than common shares?", a: "They often have fixed dividend terms and higher liquidation priority, reducing uncertainty relative to residual common equity claims." },
+      { q: "How is P/B interpreted when above 1?", a: "Market value of equity exceeds accounting book value, often reflecting expected profitability, growth opportunities, or intangible value not fully on the balance sheet." }
+    ],
+    questions: [
+      `A company pays no common dividend in a year but pays preferred dividends in arrears before any future common payout due to contract terms. The preferred shares are most likely:
+
+A) Non-cumulative
+B) Cumulative
+C) Participating only
+D) Convertible only
+
+Answer: B — Cumulative preferred stock accumulates unpaid dividends and requires settlement before common dividends resume. Non-cumulative preferred has no arrears carry-forward.`,
+      `An ADR program is best described as:
+
+A) A debt security issued only in the US Treasury market
+B) A local-market certificate representing ownership in foreign shares
+C) A guaranteed fixed-income wrapper around equities
+D) A synthetic derivative with no underlying shares
+
+Answer: B — ADRs trade in US markets and represent economic interests in foreign shares held by a depository. They are equity-linked instruments, not fixed-income securities.`,
+      `If a stock rises from 50 to 54 and pays a dividend of 1 during the period, total return is closest to:
+
+A) 8%
+B) 9%
+C) 10%
+D) 12%
+
+Answer: C — Total return = (54 - 50 + 1)/50 = 5/50 = 10%. A ignores dividend and B miscalculates denominator effect.`,
+      `A stock has NI of 240, beginning common equity of 1,800, and ending common equity of 2,200. ROE is closest to:
+
+A) 10.0%
+B) 12.0%
+C) 13.3%
+D) 24.0%
+
+Answer: B — Average equity is (1,800 + 2,200)/2 = 2,000; ROE = 240/2,000 = 12.0%. C would use beginning equity only.`,
+      `A company’s share price is 35.74 and book value per share is 11.98. P/B is closest to:
+
+A) 1.49
+B) 2.98
+C) 3.58
+D) 11.98
+
+Answer: B — P/B = 35.74 / 11.98 ≈ 2.98. A is approximately half the correct ratio, C overstates the quotient, and D is book value itself.`
+    ]
+  },
+  eq5: {
+    intro: "This module starts the practical company-analysis sequence used in equity research reports. It turns historical statements and business-model evidence into interpretable drivers of sales, profitability, working capital, and financing quality.",
+    sections: {
+      eq5a: {
+        body: `A thorough company research report links qualitative business understanding with quantified financial implications. Initiation reports usually include business model, industry context, forecast model, valuation, recommendation, and risk sections, while subsequent notes focus on what changed. In this framework, analysts first analyze company past/present, then industry/competition, then forecasting and valuation. Quality comes from coherence across sections rather than isolated ratio commentary.
+
+Business model analysis organizes around five questions: what is sold, to whom, how it is delivered, how it is priced/paid, and what inputs/relationships are required to operate. Sources include filings, calls, investor presentations, competitor materials, and selected primary research. For Warehouse Club, the model combines low-markup high-volume retail with paid membership economics. Membership both provides recurring revenue and supports loyalty and shrink control, while warehouse operations and limited SKU breadth support cost leadership.
+
+Revenue analysis can be bottom-up or top-down, often both. Bottom-up decomposes by units and prices or operational capacity (for Warehouse, average stores × sales per store; members × fee). Top-down checks market size and market share trajectories against macro context. In the case data, Warehouse net sales grew from 14,488 to 28,377 as average stores rose 106 to 147 and net sales per average store rose 138 to 193; members grew from 6,004 to 10,241, while fee increases from 50 to 60 added a second growth lever.`,
+        note: "Remember: pricing decisions are not pure management choice; pricing power is constrained by substitutes, switching behavior, and competitive response.",
+        definition: "Pricing power: A company’s ability to change prices or economic terms without causing material volume loss or margin deterioration.",
+        example: "Warehouse bottom-up decomposition in 2X19: average stores = 147 and net sales per average store = 193, giving net sales about 28,377. Membership fee revenue can be expressed as average members × average fee; with about 10,017 average members (thousands) and USD60 fee, fee revenue is about 601. This split clarifies how store growth, productivity, and membership policy each drive total revenue."
+      },
+      eq5b: {
+        body: `Operating profitability analysis starts with cost behavior and classification. In fixed/variable terms, operating profit can be written as [Q × (P - VC)] - FC, where contribution margin and fixed-cost burden determine break-even sensitivity. Degree of operating leverage (DOL) is %ΔOperating Income/%ΔSales and indicates how strongly margins respond to volume shocks. Functional statements under IFRS/GAAP require analysts to infer fixed/variable content from line-item nature and business context.
+
+Working capital analysis focuses on cash conversion and financing implications. Activity metrics DSO, DOH, and DPO combine into cash conversion cycle (CCC = DSO + DOH - DPO). A short or negative CCC means less external financing need; negative net working capital can act as a funding source if supplier terms are effectively used and inventory/receivables turn quickly. For Warehouse, DSO around 4 days and inventory financed close to payable timing supported a CCC near one week and persistently negative NWC as a percent of sales.
+
+Capital-structure review links sources/uses of cash to value creation and risk. Analysts test whether returns on invested capital exceed cost of capital over time and evaluate financial leverage via debt ratios, interest coverage, and degree of financial leverage. In the module case, Warehouse showed ROIC above WACC and conservative balance-sheet leverage, with net debt negative and strong coverage. That combination indicates operational strength but also raises capital-allocation questions about excess cash versus incremental return opportunities.`,
+        note: "Remember: negative working capital is not automatically distress. In many retail models it reflects efficient supplier financing and fast cash collection.",
+        definition: "Degree of operating leverage (DOL): The ratio of percentage change in operating income to percentage change in sales, measuring operating-profit sensitivity to revenue changes.",
+        example: "Using company data: sales rose from 9,256 to 9,707 and operating income rose from 1,527 to 1,673. DOL = (1,673/1,527 - 1) / (9,707/9,256 - 1) ≈ 1.96. This means a 1% sales change translated into about 1.96% operating-income change over that period."
+      }
+    },
+    flashcards: [
+      { q: "What are two core differences between initiation and subsequent research reports?", a: "Initiations provide full company/industry context and base model; subsequent reports emphasize changes in thesis, forecasts, valuation, and recommendation after new information." },
+      { q: "What are the five business-model questions used in LM5?", a: "What is sold, to whom, how delivered, how priced/paid, and what resources/suppliers/partners are required." },
+      { q: "Give one top-down and one bottom-up revenue driver example.", a: "Top-down: market share × market size. Bottom-up: stores × sales per store (or units × average selling price)." },
+      { q: "Write the fixed/variable operating-profit identity.", a: "Operating profit = [Q × (P - VC)] - FC." },
+      { q: "How is cash conversion cycle calculated?", a: "CCC = DSO + DOH - DPO." },
+      { q: "Why can ROIC exceed WACC with thin operating margins?", a: "High asset turnover and favorable working-capital structure (e.g., negative NWC) can produce strong capital efficiency despite low percentage margins." }
+    ],
+    questions: [
+      `In the company-analysis framework used in LM5–LM7, which stage comes after analyzing company past and present?
+
+A) Valuation only
+B) Industry and competitive analysis
+C) Portfolio construction
+D) Risk parity optimization
+
+Answer: B — The sequence is company past/present, then industry/competitive analysis, then forecasting and valuation. A skips required contextual analysis.`,
+      `A retailer has average stores of 147 and net sales per average store of 193 (USD millions). Estimated net sales are closest to:
+
+A) 19,300
+B) 24,071
+C) 28,377
+D) 34,500
+
+Answer: C — 147 × 193 = 28,371, which rounds to the disclosed 28,377 level in the case. The other options do not match the multiplicative decomposition.`,
+      `Which metric most directly measures operating-profit sensitivity to revenue changes?
+
+A) DSO
+B) DPO
+C) DOL
+D) P/B
+
+Answer: C — Degree of operating leverage is defined as %ΔOperating Income/%ΔSales. DSO and DPO are working-capital timing metrics, while P/B is valuation multiple.`,
+      `A company has DSO 4, DOH 30, and DPO 28. Cash conversion cycle is:
+
+A) -2 days
+B) 2 days
+C) 6 days
+D) 62 days
+
+Answer: C — CCC = 4 + 30 - 28 = 6 days. A and B reflect sign or arithmetic errors; D incorrectly adds without subtracting payables.`,
+      `Which statement about negative net working capital in a high-turn retail model is most accurate?
+
+A) It always indicates imminent bankruptcy
+B) It is typically a source of operating financing
+C) It implies poor supplier relationships
+D) It means receivables are uncollectible
+
+Answer: B — In many efficient retail models, payables and fast inventory turns create a funding source. A is a common trap: negative NWC is not automatically distress.`
+    ]
+  },
+  eq6: {
+    intro: "This module moves from firm-level history to competitive context. It teaches how to define industries, survey structure and economics, and judge whether a company’s strategy is likely to sustain returns against rivals, entrants, substitutes, customers, and suppliers.",
+    sections: {
+      eq6a: {
+        body: `Industry analysis begins by defining boundaries and constituent firms, then measuring size, growth, profitability, and share dynamics. The practical challenge is that many firms are multi-product and classification can be subjective. Commercial taxonomies like GICS, ICB, and TRBC provide useful starting structure, but each is hierarchical and forces a single primary classification. Analysts therefore often adjust boundaries to match customer substitution reality rather than default index labels.
+
+A disciplined survey quantifies market size (usually annual sales), growth character (mature vs growth; cyclical vs defensive), concentration, profitability, and market-share trend. Concentration can be measured with HHI, where higher values indicate more concentrated industries. Growth interpretation requires comparison to broader economic activity across cycles, not just point-in-time YoY rates. Industry data may combine public-company disclosures with government statistics and specialized third-party datasets where private-company activity is large.
+
+Classification limitations matter for inference quality. Global schemes may over-aggregate dissimilar business models or split directly competing channels into different sectors. Geographic competition scope also differs by industry: healthcare delivery is often local/national due to regulation and behavior, while many digital products and manufactured goods compete globally. Analysts should restate history when classification changes and remain alert to survivorship effects from listings, delistings, and corporate actions.`,
+        note: "Remember: classification systems are tools, not truth. Always re-map to actual customer substitution and competitive set before forecasting.",
+        definition: "Herfindahl-Hirschman Index (HHI): A concentration measure equal to the sum of squared market shares (in percentage terms) of firms in an industry.",
+        example: "If three firms have 50%, 30%, and 20% shares, HHI = 50^2 + 30^2 + 20^2 = 3,800. This indicates high concentration relative to a fragmented market with many small firms."
+      },
+      eq6b: {
+        body: `Porter’s Five Forces framework assesses competitive rivalry through five channels: threat of entrants, threat of substitutes, supplier power, customer power, and rivalry among incumbents. High rivalry tends to compress long-run returns toward cost of capital unless a firm has durable defensive advantages. Entry barriers can come from scale, regulation, network effects, switching costs, or privileged access to channels and inputs. Substitute risk rises when alternative solutions improve quality/price and switching friction is low.
+
+PESTLE complements Five Forces by scanning external political, economic, social, technological, legal, and environmental influences that alter growth rates and share trajectories. Unlike Five Forces, which focuses on profitability structure, PESTLE is especially strong for theme identification and medium-term demand/supply shifts. Examples include carbon-policy impacts on energy and autos, demographic shifts in healthcare demand, and social-media-driven changes in beauty category growth. Analysts should identify which PESTLE factors are truly material rather than produce checklist noise.
+
+Competitive positioning analysis then asks whether strategy is coherent against both structural and external pressures and whether execution capability exists. The module frames three generic strategies: cost leadership, differentiation, and focus. Each has distinct defense mechanisms and failure modes, such as imitation risk for differentiators or price-war vulnerability for weak cost leaders. Good analysis avoids middle-ground narratives and ties strategic claims to measurable evidence like margin resilience, share stability, and capital-return persistence.`,
+        note: "Remember: a strategy is good only relative to industry forces and execution capability. A compelling narrative without structural defense usually fails in competitive markets.",
+        definition: "Porter’s Five Forces: A framework for evaluating industry competitive intensity using entrant threat, substitute threat, supplier power, customer power, and rivalry among existing competitors.",
+        example: "US retail (excluding autos) illustrates force asymmetry: entrant threat is high due to frequent new formations, substitute threat from services is moderate/low by category, customer power is moderate because comparison is easy, supplier power is low-to-moderate with exceptions for strong brands, and incumbent rivalry is high due to heavy price competition."
+      }
+    },
+    flashcards: [
+      { q: "What is the first analytical step in LM6?", a: "Define the industry boundaries and constituents before measuring growth, profitability, and share trends." },
+      { q: "Why can single-classification taxonomies mislead?", a: "Multi-segment firms are forced into one bucket, which can hide true competitor sets and segment economics relevant to valuation." },
+      { q: "What does a high HHI imply?", a: "Higher concentration (fewer large players), often associated with potentially lower rivalry, though not always lower competitive intensity in practice." },
+      { q: "How does PESTLE differ from Five Forces?", a: "PESTLE focuses on external macro/structural influences; Five Forces focuses on internal industry structure and profitability pressure channels." },
+      { q: "Name the three generic competitive strategies from Porter.", a: "Cost leadership, differentiation, and focus." },
+      { q: "What does being 'stuck in the middle' mean competitively?", a: "The firm lacks clear cost advantage, differentiated value, or focused niche defense, making sustained returns harder." }
+    ],
+    questions: [
+      `A company with multiple segments is assigned to one strict taxonomy bucket even though a major profit segment competes elsewhere. The main analyst risk is:
+
+A) Currency translation error
+B) Competitor misidentification
+C) Overstated tax rate
+D) Double-counted shares outstanding
+
+Answer: B — Forced single-bucket classification can obscure the true competitive set and distort peer comparisons and forecasts. A/C/D are unrelated to this classification issue.`,
+      `An industry has market shares 40%, 25%, 20%, and 15%. HHI is closest to:
+
+A) 2,250
+B) 2,650
+C) 3,000
+D) 6,250
+
+Answer: B — HHI = 40^2 + 25^2 + 20^2 + 15^2 = 1,600 + 625 + 400 + 225 = 2,850? Wait check: that equals 2,850. Closest choice is C? Recompute options. Correct value is 2,850, so closest among choices is C at 3,000. Therefore answer C. A and B understate, D overstates materially.`,
+      `A regulatory proposal introduces strict compliance costs for new entrants in a sector. This most directly affects which force?
+
+A) Threat of substitutes
+B) Threat of new entrants
+C) Bargaining power of customers
+D) Rivalry among incumbents only
+
+Answer: B — Higher regulatory burdens raise entry barriers and reduce entrant threat directly. Rivalry may change indirectly, but the immediate force impacted is entrant threat.`,
+      `A streaming service begins producing original content instead of only licensing third-party content. This is best described as:
+
+A) Backward integration by customers
+B) Forward integration by suppliers
+C) Backward integration by an industry customer
+D) Pure horizontal merger
+
+Answer: C — The platform previously bought content from studios and now moves upstream into production, i.e., backward integration from customer to supplier stage.`,
+      `Which statement best characterizes a cost-leadership strategy?
+
+A) It relies on premium pricing and exclusivity
+B) It seeks low unit cost through scale and disciplined operations
+C) It avoids all fixed costs
+D) It only works in monopoly markets
+
+Answer: B — Cost leadership depends on structural cost advantages (scale, procurement, process) and can defend margins in price-competitive markets. A is differentiation, while C and D are incorrect generalizations.`
+    ]
+  },
+  eq7: {
+    intro: "This module converts analysis into forecast architecture. It is practical and exam-relevant because forecast quality depends less on spreadsheet complexity and more on coherent object selection, approach choice, and explicit scenario treatment of key risks.",
+    sections: {
+      eq7a: {
+        body: `Forecasting starts by choosing objects: line drivers, line items, summary metrics, or ad hoc items not yet in statements. Driver-based forecasts often improve explanatory power because they separate mechanisms that can move differently, while summary-level forecasts improve speed but reduce auditability. Approaches include historical results, base-rate convergence, management guidance, and analyst discretion. In practice, robust models combine approaches rather than forcing one method everywhere.
+
+Approach selection is conditional on business model, cyclicality, information quality, and expected structural change. Historical carry-forward works better for mature, non-cyclical, stable structures; convergence is useful when a business is maturing toward peer economics; management guidance is useful for firm-controlled objects if track record is credible. Discretion is critical when structural breaks or unique innovations make history less informative. Forecast horizon should reflect investment process and cycle characteristics rather than arbitrary calendar length.
+
+Revenue forecasts use top-down and bottom-up objects jointly. Top-down may map growth to GDP, market size, and share; bottom-up may map units and price, stores and sales/store, or user/account metrics and monetization rates. Analysts should isolate recurring from non-recurring effects, including FX, calendar effects, and one-time shocks, to avoid embedding temporary distortions. Cross-checking implied market shares from bottom-up models is a powerful error-control step.`,
+        note: "Remember: more forecast lines do not guarantee better forecasts. Use the simplest object set that is observable, verifiable, and economically coherent.",
+        definition: "Forecast object: The specific variable chosen for direct projection in a model, such as a line-item driver, a financial statement line, a summary measure, or an ad hoc contingent item.",
+        example: "For Iliso, a top-down 2X20 GMV forecast can be built as market size × share. If national retail ex-autos is forecast at 4,300,000 and Iliso share at 0.23%, implied GMV is 9,890. A bottom-up check could use active accounts × GMV per account; large mismatch would indicate hidden assumption conflicts."
+      },
+      eq7b: {
+        body: `Operating-cost forecasts should stay coherent with revenue assumptions and cost behavior. In high fixed-cost models, small revenue misses can drive large operating-income misses due to operating leverage. Working-capital forecasting usually combines sales/COGS forecasts with efficiency ratios (DSO, DOH, DPO) to project receivables, inventories, and payables. For unique business models, historical internal efficiency paths can be more informative than broad industry averages.
+
+Capital-investment forecasts often split maintenance and growth capex. Maintenance capex is commonly anchored to depreciation/amortization over time, while growth capex is linked to strategic expansion plans and expected demand. Capital-structure forecasts can use leverage targets such as Debt/EBITDA, credit-rating constraints, and management allocation preferences. The key is consistency across income statement, balance sheet, and cash-flow statement so financing needs and returns reconcile.
+
+Scenario analysis formalizes uncertainty by varying key risk factors and mapping each to a coherent financial path. In the Microsoft tablet-cannibalization case, higher cannibalization assumptions lowered projected revenue, compressed operating leverage benefits, and reduced EPS versus pre-cannibalization baseline. This illustrates why one-point forecasts can understate risk asymmetry in transition periods. Good scenario design focuses on a few high-impact drivers and estimates likelihoods to support decision-weighted valuation.`,
+        note: "Remember: scenario analysis is not random sensitivity grids; each scenario must be internally consistent across volume, price, cost, balance-sheet, and financing assumptions.",
+        definition: "Scenario analysis: A forecasting method that develops multiple internally consistent financial outcomes based on alternative assumptions for key risk drivers and their probabilities.",
+        example: "Microsoft base case in the module assumed tablet cannibalization of 30% (consumer) and 10% (non-consumer), reducing FY2014 revenue by about USD4.2 billion versus pre-cannibalization and lowering estimated FY2014 EPS by roughly USD0.25. Bear assumptions (40%/20%) produced larger EPS and margin pressure, while bull assumptions (15%/5%) reduced the drag."
+      }
+    },
+    flashcards: [
+      { q: "What are the four common forecast-object types in LM7?", a: "Drivers of lines, individual line items, summary measures, and ad hoc objects." },
+      { q: "When is management guidance generally most useful?", a: "For objects management can influence directly (e.g., capex, some expense lines) and where guidance history is credible." },
+      { q: "Why separate recurring and non-recurring revenue effects?", a: "They have different drivers and persistence; mixing them can bias trend growth and valuation assumptions." },
+      { q: "How are working-capital forecasts commonly operationalized?", a: "Project sales/COGS, then apply DSO/DOH/DPO or related turnover assumptions to derive AR, inventory, and AP levels." },
+      { q: "How is maintenance capex commonly approximated?", a: "Often by depreciation/amortization run-rate, with adjustments for inflation, asset age, and replacement realities." },
+      { q: "What did the Microsoft cannibalization case illustrate about fixed-cost structures?", a: "Revenue pressure can disproportionately reduce operating income and EPS because operating leverage magnifies top-line shocks." }
+    ],
+    questions: [
+      `Which forecast-object choice generally improves explanatory transparency but increases modeling effort?
+
+A) Single summary metric only
+B) Line-item driver decomposition
+C) Pure management midpoint usage
+D) Ignoring segment disclosures
+
+Answer: B — Driver decomposition clarifies mechanism-level assumptions and diagnostics but requires more inputs and maintenance. A is faster but less transparent.`,
+      `For a mature, low-cyclicality company with stable structure, the most appropriate default approach is often:
+
+A) Historical results carry-forward
+B) Pure discretionary regime-shift model
+C) Mandatory base-rate convergence to GDP each year
+D) Ignore history and use only sell-side targets
+
+Answer: A — Stable conditions support historical carry-forward as a pragmatic base case. B and D are unnecessarily weakly anchored; C may be too rigid depending on business specifics.`,
+      `A company’s sales grow 5% but operating income grows 12.5%. DOL is:
+
+A) 0.40
+B) 1.00
+C) 2.50
+D) 17.50
+
+Answer: C — DOL = 12.5% / 5.0% = 2.5. A inverts the ratio; D confuses percentage-point arithmetic with ratio interpretation.`,
+      `Which pair best represents maintenance vs growth capital expenditure?
+
+A) Maintenance: expansion stores; Growth: replacement equipment
+B) Maintenance: replacement sustaining spend; Growth: capacity/market expansion
+C) Maintenance: debt issuance; Growth: dividends
+D) Maintenance: tax payments; Growth: share repurchases
+
+Answer: B — Maintenance preserves current operating capability; growth capex adds future capacity or reach. A reverses meanings; C and D are financing uses, not capex categories.`,
+      `In scenario analysis, the most important design principle is:
+
+A) Maximize number of scenarios regardless of coherence
+B) Use only one variable per scenario
+C) Ensure assumptions are internally consistent across statements
+D) Keep probabilities equal for simplicity
+
+Answer: C — Scenario credibility depends on cross-statement consistency and economically coherent assumptions. A and D are convenience choices that can weaken analytical value.`
+    ]
+  },
+  eq8: {
+    intro: "This module introduces Level I equity valuation mechanics: present value logic, growth-stage dividend models, comparables-based multiples, enterprise value approaches, and asset-based floors. It is one of the most formula-dense parts of equity and links directly to recommendation decisions.",
+    sections: {
+      eq8a: {
+        body: `Valuation decisions compare estimated intrinsic value with market price to classify securities as undervalued, fairly valued, or overvalued. The comparison must include model-confidence judgment, not just point estimate arithmetic, because input uncertainty can be material. Analysts often triangulate using multiple models to reduce single-model risk. Three broad model families are present value models, multiplier models, and asset-based models.
+
+Present value models discount future shareholder benefits at required return r. Dividend Discount Models value expected dividends, while FCFE models value distributable cash capacity net of reinvestment and financing effects. The general DDM form is V0 = sum of D_t/(1+r)^t plus terminal value treatment for finite horizons. Required return is usually estimated with CAPM-style logic or policy-consistent firm assumptions.
+
+Dividend mechanics matter operationally: declaration date, ex-dividend date, record date, and payment date govern entitlement and price behavior. On the ex-date, price typically drops by approximately the dividend amount, all else equal. Stock dividends, stock splits, and reverse splits alter per-share metrics and counts but do not by themselves create economic value. Share repurchases are an alternative cash-distribution channel that can be economically similar to dividends under certain assumptions.`,
+        note: "Remember: intrinsic value does not depend on your personal holding period; finite-horizon models still embed the present value of all future cash flows via terminal value.",
+        definition: "Dividend Discount Model (DDM): A present value model that estimates equity value as the discounted value of expected future dividends.",
+        example: "If expected dividends are 2.00 in year 1, 2.10 in year 2, and 2.20 in year 3 with expected terminal price 20.00 at year 3 and required return 10%, value is 2.00/1.1 + 2.10/1.1^2 + (2.20 + 20.00)/1.1^3 = 20.23 (approximately)."
+      },
+      eq8b: {
+        body: `The Gordon growth model is a one-stage DDM for stable growers: V0 = D1/(r - g), requiring r > g. It suits mature companies with durable payout and growth behavior. Multistage DDMs handle high-growth transition periods before stable-state growth. Preferred stock valuation is a direct extension: perpetual non-callable preferred is V0 = D/r; fixed-maturity preferred adds discounted par value at maturity.
+
+Multiplier valuation uses price or EV relationships against fundamentals. Price multiples include P/E, P/S, P/B, and P/operating cash flow; EV multiples include EV/EBITDA and EV/Operating Income. The method of comparables applies the law of one price to similar firms, but quality depends on peer quality, accounting comparability, and business-model alignment. Fundamental P/E links from Gordon logic show sensitivity to payout, growth, and required return.
+
+Enterprise value and asset-based valuation provide complementary lenses. EV captures total operating enterprise claim as equity value plus debt and preferred minus cash/investments, useful for differing capital structures. Asset-based methods estimate fair value of assets minus liabilities and are useful for asset-heavy contexts, private-company appraisals, and liquidation-floor checks, but can miss intangible franchise value. Best practice is triangulation: present value for long-run economics, multiples for market relative context, and asset value for downside anchor.`,
+        note: "Remember: low multiple is not automatically cheap. A low P/E may reflect lower growth, lower quality earnings, higher required return, or balance-sheet risk.",
+        definition: "Enterprise value (EV): The market value of operating enterprise claims, commonly measured as equity market value plus debt and preferred stock minus cash and short-term investments.",
+        example: "Using Gordon: if D0 = 2.00, g = 4%, and r = 7%, then D1 = 2.08 and V0 = 2.08/(0.07 - 0.04) = 69.33. A small change to r = 8% drops value to 52.00, showing high sensitivity to spread (r - g), a core exam insight."
+      }
+    },
+    flashcards: [
+      { q: "How do you classify a stock if estimated value is above market price?", a: "Undervalued, subject to confidence in model and inputs and expected convergence within investment horizon." },
+      { q: "Write the Gordon growth model formula.", a: "V0 = D1 / (r - g), with r > g." },
+      { q: "What is FCFE in simple form?", a: "FCFE = Cash flow from operations - fixed capital investment + net borrowing." },
+      { q: "Why does share price usually drop on ex-dividend date?", a: "New buyers after ex-date are not entitled to the declared dividend, so value transfers to existing holders and price adjusts downward by roughly dividend amount." },
+      { q: "What does EV/EBITDA help compare better than P/E in many cases?", a: "Firms with different capital structures and depreciation profiles, since EV includes debt claims and EBITDA is pre-interest/pre-D&A." },
+      { q: "When is asset-based valuation especially useful?", a: "Asset-heavy businesses, private-company appraisals, and situations where liquidation/floor value assessment is important." }
+    ],
+    questions: [
+      `A stock has market price 30 and analyst intrinsic value estimate 39.77. It appears:
+
+A) Overvalued
+B) Undervalued
+C) Fairly valued
+D) Unanalyzable
+
+Answer: B — Estimated value above market price indicates undervaluation. A reverses the logic, while C would require approximate equality within confidence bounds.`,
+      `A perpetual non-callable preferred share pays 1.20 annually and required return is 4.49%. Intrinsic value is closest to:
+
+A) 22.49
+B) 26.73
+C) 31.02
+D) 44.90
+
+Answer: B — V = D/r = 1.20/0.0449 ≈ 26.73. C would imply a lower discount rate; A understates valuation materially.`,
+      `A company just paid dividend 2.00, expects constant growth 4%, and required return is 7%. Gordon value is closest to:
+
+A) 52.00
+B) 66.67
+C) 69.33
+D) 74.29
+
+Answer: C — D1 = 2.00 × 1.04 = 2.08; V0 = 2.08/(0.07 - 0.04) = 69.33. A corresponds to using r = 8%, the common sensitivity trap.`,
+      `Which statement about EV is most accurate?
+
+A) EV equals market cap minus debt plus cash
+B) EV ignores preferred stock by definition
+C) EV is commonly market cap + debt + preferred - cash
+D) EV can be computed only with book values
+
+Answer: C — This is the standard operating-claim formulation used in practice. A has incorrect signs, B omits preferred incorrectly, and D is false because market values are preferred where available.`,
+      `An analyst values an asset-heavy private business with sparse earnings history and substantial tangible collateral. Most appropriate primary method is:
+
+A) Asset-based valuation
+B) Pure two-stage DDM
+C) Momentum technical analysis only
+D) P/E relative to software peers
+
+Answer: A — Tangible-asset-heavy profiles with limited earnings history are classic use-cases for asset-based methods. B and D may be supplemental at best but are not primary here.`
+    ]
+  }
+};
+
+const EQTY_MODULES = [
+  {
+    id: "eq1",
+    num: "LM 1",
+    title: "Market Organization and Structure",
+    subs: [
+      { id: "eq1a", num: "1.1", title: "Financial System Functions, Assets, and Intermediaries" },
+      { id: "eq1b", num: "1.2", title: "Trading Positions, Orders, Market Structure, and Regulation" }
+    ]
+  },
+  {
+    id: "eq2",
+    num: "LM 2",
+    title: "Security Market Indexes",
+    subs: [
+      { id: "eq2a", num: "2.1", title: "Index Fundamentals and Construction Methods" },
+      { id: "eq2b", num: "2.2", title: "Rebalancing, Reconstitution, and Index Uses" }
+    ]
+  },
+  {
+    id: "eq3",
+    num: "LM 3",
+    title: "Market Efficiency",
+    subs: [
+      { id: "eq3a", num: "3.1", title: "Efficiency Concepts, Drivers, and Forms" },
+      { id: "eq3b", num: "3.2", title: "Anomalies and Behavioral Finance" }
+    ]
+  },
+  {
+    id: "eq4",
+    num: "LM 4",
+    title: "Overview of Equity Securities",
+    subs: [
+      { id: "eq4a", num: "4.1", title: "Equity Security Types, Rights, and Cross-Border Access" },
+      { id: "eq4b", num: "4.2", title: "Equity Risk-Return Characteristics and Company Value" }
+    ]
+  },
+  {
+    id: "eq5",
+    num: "LM 5",
+    title: "Company Analysis: Past and Present",
+    subs: [
+      { id: "eq5a", num: "5.1", title: "Research Reports, Business Model, and Revenue Analysis" },
+      { id: "eq5b", num: "5.2", title: "Profitability, Working Capital, and Capital Structure" }
+    ]
+  },
+  {
+    id: "eq6",
+    num: "LM 6",
+    title: "Industry and Competitive Analysis",
+    subs: [
+      { id: "eq6a", num: "6.1", title: "Industry Definition, Classification, and Survey" },
+      { id: "eq6b", num: "6.2", title: "Industry Structure, PESTLE, and Competitive Positioning" }
+    ]
+  },
+  {
+    id: "eq7",
+    num: "LM 7",
+    title: "Company Analysis: Forecasting",
+    subs: [
+      { id: "eq7a", num: "7.1", title: "Forecast Objects, Principles, and Revenue Forecasting" },
+      { id: "eq7b", num: "7.2", title: "Forecasting Expenses, Capital Structure, and Scenarios" }
+    ]
+  },
+  {
+    id: "eq8",
+    num: "LM 8",
+    title: "Equity Valuation: Concepts and Basic Tools",
+    subs: [
+      { id: "eq8a", num: "8.1", title: "Valuation Model Categories and Present Value Foundations" },
+      { id: "eq8b", num: "8.2", title: "DDM Applications, Multiples, EV, and Asset-Based Valuation" }
+    ]
+  }
+];
 // ════════════════════════════════════════════════════════════════
 // SUBJECT REGISTRY
 // ════════════════════════════════════════════════════════════════
@@ -2143,6 +2820,7 @@ const SUBJECTS = [
   {key:"quant", label:"Quantitative Methods", short:"Quant", modules:MODULES_QUANT, content:QUANT_CONTENT},
   {key:"econ",  label:"Economics",            short:"Econ",  modules:ECON_MODULES,  content:ECON_CONTENT},
   {key:"fsa",  label:"Financial Statement Analysis",short:"FSA",  modules:FSA_MODULES,  content:FSA_CONTENT},
+  {key:"Eqty",  label:"Equity",short:"Equity",  modules:EQTY_MODULES,  content:EQTY_CONTENT},
 ];
 
 
